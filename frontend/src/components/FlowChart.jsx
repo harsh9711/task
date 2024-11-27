@@ -1,9 +1,4 @@
-import ReactFlow, {
-  Controls,
-  Background,
-  applyNodeChanges,
-  applyEdgeChanges,
-} from "reactflow";
+import ReactFlow, { Controls, Background, applyNodeChanges, applyEdgeChanges } from "reactflow";
 import axios from "axios";
 import Modal from "react-modal";
 import "reactflow/dist/style.css";
@@ -21,6 +16,11 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
+    maxWidth: "500px",
+    borderRadius: "10px",
+    padding: "20px",
+    backgroundColor: "#ffffff",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
   },
 };
 
@@ -116,44 +116,40 @@ const FlowChart = () => {
     switch (modalContent) {
       case "Cold-Email":
         return (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            <label htmlFor="subject">Subject:</label>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <label htmlFor="subject" className="text-sm font-semibold">Subject:</label>
             <input
               type="text"
               name="subject"
               id="subject"
-              defaultValue={
-                editingNode?.data.label.split("- (")[1]?.split(")")[0] || ""
-              }
+              defaultValue={editingNode?.data.label.split("- (")[1]?.split(")")[0] || ""}
               required
-              className="border border-black rounded-md p-1"
+              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <label htmlFor="content">Content:</label>
+            <label htmlFor="content" className="text-sm font-semibold">Content:</label>
             <input
               type="text"
               name="content"
               id="content"
               defaultValue={editingNode?.data.label.split(") ")[1] || ""}
               required
-              className="border border-black rounded-md p-1"
+              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button type="submit" className="mt-2">
+            <button type="submit" className="mt-4 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
               {editingNode ? "Update Cold Email" : "Add Cold Email"}
             </button>
           </form>
         );
       case "Wait/Delay":
         return (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            <label htmlFor="delay">Delay:</label>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <label htmlFor="delay" className="text-sm font-semibold">Delay:</label>
             <select
               name="delay"
               id="delay"
-              defaultValue={
-                editingNode?.data.label.split("- (")[1]?.split(" min")[0] +
-                  " min" || ""
-              }
+              defaultValue={editingNode?.data.label.split("- (")[1]?.split(" min")[0] + " min" || ""}
               required
+              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {[...Array(6).keys()].map((i) => (
                 <option key={i} value={`${i + 1} min`}>
@@ -161,25 +157,23 @@ const FlowChart = () => {
                 </option>
               ))}
             </select>
-            <button type="submit" className="mt-2">
+            <button type="submit" className="mt-4 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
               {editingNode ? "Update Delay" : "Add Delay"}
             </button>
           </form>
         );
       case "Lead-Source":
         return (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            <label htmlFor="email">Recipient Email:</label>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <label htmlFor="email" className="text-sm font-semibold">Recipient Email:</label>
             <input
               name="email"
               id="email"
-              defaultValue={
-                editingNode?.data.label.split("- (")[1]?.split(")")[0] || ""
-              }
+              defaultValue={editingNode?.data.label.split("- (")[1]?.split(")")[0] || ""}
               required
-              className="border border-black rounded-md p-1"
+              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button type="submit" className="mt-2">
+            <button type="submit" className="mt-4 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
               {editingNode ? "Update Lead Source" : "Add Lead Source"}
             </button>
           </form>
@@ -225,7 +219,7 @@ const FlowChart = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
-        className="rounded-md bg-[#3C5B6F]"
+        className="rounded-md bg-[#3C5B6F] shadow-lg"
       >
         <Controls />
         <Background />
@@ -234,18 +228,33 @@ const FlowChart = () => {
         <select
           value={selectedNodeType}
           onChange={(e) => setSelectedNodeType(e.target.value)}
+          className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="Cold-Email">Cold Email</option>
           <option value="Wait/Delay">Wait/Delay</option>
         </select>
-        <button onClick={handleAddNode}>Add Node</button>
-        <button onClick={handleStartProcess}>Start Process</button>
+        <button
+          onClick={handleAddNode}
+          className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
+        >
+          Add Node
+        </button>
+        <button
+          onClick={handleStartProcess}
+          className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-200"
+        >
+          Start Process
+        </button>
       </div>
+
+      {/* Modal for adding/editing nodes */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setIsOpen(false)}
         style={customStyles}
+        contentLabel="Node Modal"
       >
+        <h2 className="text-xl font-semibold text-center mb-4">{modalContent}</h2>
         {renderModalContent()}
       </Modal>
     </div>
